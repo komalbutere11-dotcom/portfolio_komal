@@ -95,52 +95,52 @@
 
         <div class="gallery">
             <div class="gallery-item">
-                <img src="Images/p1.jpg" onclick="openFull(this)" />
+                <img src="p1.jpg" onclick="openFull(this)" />
                 <div class="label">Portrait</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p2.jpg" onclick="openFull(this)" />
+                <img src="p2.jpg" onclick="openFull(this)" />
                 <div class="label">Nature</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p3.jpg" onclick="openFull(this)" />
+                <img src="p3.jpg" onclick="openFull(this)" />
                 <div class="label">Wedding</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p4.jpg" onclick="openFull(this)" />
+                <img src="p4.jpg" onclick="openFull(this)" />
                 <div class="label">Fashion</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p5.jpg" onclick="openFull(this)" />
+                <img src="p5.jpg" onclick="openFull(this)" />
                 <div class="label">Street</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p6.jpg" onclick="openFull(this)" />
+                <img src="p6.jpg" onclick="openFull(this)" />
                 <div class="label">Event</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/Untitled-1.jpeg" onclick="openFull(this)" />
+                <img src="Untitled-1.jpeg" onclick="openFull(this)" />
                 <div class="label">Event</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/poster.png" onclick="openFull(this)" />
+                <img src="poster.png" onclick="openFull(this)" />
                 <div class="label">Event</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p8.png" onclick="openFull(this)" />
+                <img src="p8.png" onclick="openFull(this)" />
                 <div class="label">Event</div>
             </div>
 
             <div class="gallery-item">
-                <img src="Images/p7.png" onclick="openFull(this)" />
+                <img src="p7.png" onclick="openFull(this)" />
                 <div class="label">Event</div>
             </div>
         </div>
