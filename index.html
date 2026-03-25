@@ -1,1 +1,905 @@
 
+<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="portfolio._Default" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+
+<style>
+    /* --- Unique Color Palette (Neon Noir) --- */
+    :root {
+        --neon-cyan: #00f3ff;
+        --neon-pink: #bc13fe;
+        --neon-green: #00ff88;
+        --dark-bg: #050505;
+        --glass-bg: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+        background-color: #050505; /* Ensures the master page body is also dark */
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+        height: 100vh;
+        /* FIXED: Added solid black background-color to ensure deep black tone */
+        background-color: #000000; 
+        background-image: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(5,5,5,0.6) 100%), url('Images/bg.jpg');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
+        opacity: 0.15;
+        top: -200px;
+        right: -200px;
+        z-index: 1;
+        filter: blur(80px);
+    }
+
+    .hero > div {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        padding: 0 20px;
+    }
+
+    .hero h1 {
+        font-size: 5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 20px;
+        line-height: 1.1;
+        background: linear-gradient(90deg, #fff, var(--neon-cyan), #fff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 5s linear infinite;
+    }
+
+    @keyframes shine {
+        to { background-position: 200% center; }
+    }
+
+    .hero p {
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 6px;
+        margin-bottom: 40px;
+        color: rgba(255,255,255,0.7);
+    }
+
+    .btn-custom {
+        background: transparent;
+        color: var(--neon-cyan);
+        padding: 18px 50px;
+        border: 2px solid var(--neon-cyan);
+        text-decoration: none;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+        border-radius: 0;
+        margin: 5px;
+    }
+
+    .btn-custom:hover {
+        background: var(--neon-cyan);
+        color: #000;
+        box-shadow: 0 0 30px var(--neon-cyan);
+        text-decoration: none;
+    }
+
+    .btn-custom.btn-secondary {
+        border-color: var(--neon-pink);
+        color: var(--neon-pink);
+    }
+
+    .btn-custom.btn-secondary:hover {
+        background: var(--neon-pink);
+        color: #000;
+        box-shadow: 0 0 30px var(--neon-pink);
+    }
+
+    /* --- Sections --- */
+    .section {
+        padding: 100px 0;
+        text-align: center;
+        background: var(--dark-bg);
+    }
+
+    .section h2 {
+        font-size: 40px;
+        font-weight: 300;
+        text-transform: uppercase;
+        margin-bottom: 60px;
+        color: #fff;
+    }
+
+    .section h2 span {
+        color: var(--neon-pink);
+        font-weight: 700;
+    }
+
+    /* --- Glassmorphism Cards --- */
+    .card-box {
+        background: var(--glass-bg);
+        padding: 40px 30px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        height: 100%;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-box::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .card-box:hover {
+        transform: translateY(-15px) scale(1.02);
+        background: rgba(255,255,255,0.05);
+        border-color: var(--neon-cyan);
+    }
+
+    .card-box:hover::before {
+        opacity: 1;
+    }
+
+    .card-box h3 {
+        font-size: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .card-box p {
+        font-size: 14px;
+        color: #aaa;
+        line-height: 1.8;
+    }
+
+    /* --- Featured Work Grid --- */
+    .section .row > div {
+        padding: 15px;
+    }
+
+    .img-responsive {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.5s ease;
+        filter: grayscale(50%) contrast(1.1);
+        border: 1px solid transparent;
+    }
+
+    .section .row > div:hover .img-responsive {
+        transform: scale(1.05);
+        filter: grayscale(0%) contrast(1.2);
+        box-shadow: 0 10px 30px rgba(0, 243, 255, 0.2);
+        border: 1px solid var(--neon-cyan);
+    }
+
+    /* --- About Section --- */
+    .about-section {
+        background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+        position: relative;
+    }
+
+    .about-section::before {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
+        opacity: 0.08;
+        bottom: -100px;
+        left: -100px;
+        filter: blur(60px);
+    }
+
+   .about-img-wrapper {
+    position: relative;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-img-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--neon-cyan);
+    transform: translate(15px, 15px);
+    z-index: 0;
+}
+
+.about-img-wrapper img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 350px; /* FIX SIZE */
+    height: 400px;     /* FIX HEIGHT */
+    object-fit: cover; /* IMPORTANT (image cut properly) */
+    border-radius: 10px;
+    filter: grayscale(30%);
+    transition: all 0.4s ease;
+}
+
+.about-img-wrapper:hover img {
+    filter: grayscale(0%);
+    transform: translate(-5px, -5px);
+}
+
+.about-img-wrapper:hover::before {
+    transform: translate(20px, 20px);
+    box-shadow: 0 0 30px var(--neon-cyan);
+}
+
+    .about-content {
+        text-align: left;
+        padding: 40px;
+    }
+
+    .about-content h2 {
+        text-align: left;
+        margin-bottom: 30px;
+    }
+
+    .about-content p {
+        color: #888;
+        font-size: 15px;
+        line-height: 1.9;
+        margin-bottom: 20px;
+    }
+
+    .highlight-text {
+        color: var(--neon-cyan);
+        font-weight: 600;
+    }
+
+    /* --- Stats Section --- */
+    .stats-section {
+        background: linear-gradient(135deg, #0d0d0d 0%, #050505 100%);
+        padding: 80px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stats-section::after {
+        content: '';
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, var(--neon-pink) 0%, transparent 70%);
+        opacity: 0.1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        filter: blur(100px);
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 40px 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-number {
+        font-size: 70px;
+        font-weight: 700;
+        background: linear-gradient(180deg, #fff 0%, var(--neon-cyan) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: rgba(255,255,255,0.5);
+    }
+
+    /* --- Skills Section --- */
+    .skill-item {
+        text-align: left;
+        margin-bottom: 30px;
+    }
+
+    .skill-name {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #fff;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .skill-bar {
+        height: 8px;
+        background: rgba(255,255,255,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .skill-progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+        position: relative;
+        transition: width 1s ease;
+    }
+
+    .skill-progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* --- Timeline Section --- */
+    .timeline-section {
+        background: linear-gradient(180deg, #050505 0%, #0a0a0a 100%);
+    }
+
+    .timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(180deg, transparent, var(--neon-cyan), var(--neon-pink), transparent);
+        transform: translateX(-50%);
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 50px;
+        width: 50%;
+        padding: 0 40px;
+    }
+
+    .timeline-item:nth-child(odd) {
+        margin-left: 0;
+        text-align: right;
+    }
+
+    .timeline-item:nth-child(even) {
+        margin-left: 50%;
+        text-align: left;
+    }
+
+    .timeline-item::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: var(--dark-bg);
+        border: 2px solid var(--neon-cyan);
+        top: 20px;
+        border-radius: 50%;
+        z-index: 1;
+        transition: all 0.3s;
+    }
+
+    .timeline-item:nth-child(odd)::after {
+        right: -8px;
+    }
+
+    .timeline-item:nth-child(even)::after {
+        left: -8px;
+    }
+
+    .timeline-item:hover::after {
+        background: var(--neon-cyan);
+        box-shadow: 0 0 20px var(--neon-cyan);
+    }
+
+    .timeline-content {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 25px;
+        transition: all 0.3s;
+    }
+
+    .timeline-content:hover {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+    }
+
+    .timeline-date {
+        font-size: 12px;
+        color: var(--neon-pink);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
+
+    .timeline-title {
+        font-size: 18px;
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .timeline-subtitle {
+        font-size: 14px;
+        color: var(--neon-cyan);
+        margin-bottom: 15px;
+    }
+
+    .timeline-text {
+        font-size: 13px;
+        color: #888;
+        line-height: 1.7;
+    }
+
+    /* --- Contact Section --- */
+    .contact-section {
+        background: linear-gradient(180deg, #050505 0%, #0a0a0a 100%);
+        position: relative;
+    }
+
+    .contact-section::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        top: 0;
+    }
+
+    .contact-info-box {
+        text-align: left;
+        padding: 30px;
+    }
+
+    .contact-info-box h3 {
+        font-size: 18px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .contact-info-box p {
+        color: #666;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .contact-info-box a {
+        color: var(--neon-cyan);
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .contact-info-box a:hover {
+        color: var(--neon-pink);
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        border: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        color: var(--neon-cyan);
+        font-size: 20px;
+        transition: all 0.3s;
+    }
+
+    .contact-info-box:hover .contact-icon {
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+    }
+
+    /* --- Footer --- */
+    .footer {
+        background: #030303;
+        padding: 60px 0 30px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer-logo {
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 20px;
+    }
+
+    .footer-logo span {
+        color: var(--neon-cyan);
+    }
+
+    .social-links {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .social-link {
+        width: 45px;
+        height: 45px;
+        border: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        font-size: 18px;
+        transition: all 0.3s;
+    }
+
+    .social-link:hover {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+        transform: translateY(-5px);
+        text-decoration: none;
+    }
+
+    .copyright {
+        color: #444;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero h1 { font-size: 3rem; }
+        .hero::after { width: 300px; height: 300px; }
+        .about-content { text-align: center; padding: 20px; }
+        .about-content h2 { text-align: center; }
+        .stat-number { font-size: 50px; }
+        
+        .timeline::before { left: 20px; }
+        .timeline-item { width: 100%; padding-left: 50px; padding-right: 20px; }
+        .timeline-item:nth-child(odd),
+        .timeline-item:nth-child(even) { margin-left: 0; text-align: left; }
+        .timeline-item:nth-child(odd)::after,
+        .timeline-item:nth-child(even)::after { left: 12px; right: auto; }
+    }
+</style>
+
+<!-- HERO SECTION -->
+<div class="hero">
+    <div>
+        <h1>Creative Designer</h1>
+        <p>Photography | Graphic Design | Web Development</p>
+        <a href="Files/MyResume.pdf" class="btn-custom" download>Download CV</a>
+        <a href="Gallery.aspx" class="btn-custom btn-secondary">View Work</a>
+    </div>
+</div>
+
+<!-- ABOUT SECTION -->
+<div class="section about-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <div class="about-img-wrapper">
+                    <img src="Images/about.jpg" alt="About Me" />
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="about-content">
+                    <h2>About <span>Me</span></h2>
+                    <p>
+                        Hello! I'm a creative photographer and graphic designer with a strong passion for capturing beautiful moments and transforming them into meaningful visual stories. I enjoy working on photoshoots and bringing ideas to life through my creativity and unique perspective.
+                    </p>
+                    <p>
+                        I specialize in photography, graphic design, and photo editing. From wedding shoots and portraits to creative design work, I focus on delivering visually appealing and high-quality results. Editing and enhancing images is something I truly enjoy, as it adds life and emotion to every picture.
+                    </p>
+                    <p>
+                        Along with my creative skills, I also have knowledge of web development using <span class="highlight-text">ASP.NET, C#, HTML, and CSS</span>, which helps me present my work in a modern and professional way.
+                    </p>
+                    <p>
+                        This portfolio website is also designed and developed by me using coding, which reflects my interest in learning new skills and exploring new technologies. My goal is to create impactful visuals that connect with people and leave a lasting impression.
+                    </p>
+                    <a href="About.aspx" class="btn-custom">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SKILLS SECTION -->
+<div class="section">
+    <h2>My <span>Skills</span></h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card-box">
+                    <h3>Technical Skills</h3>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>Photography</span> <span>90%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>Adobe Photoshop</span> <span>85%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>Adobe Lightroom</span> <span>88%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 88%;"></div></div>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>Graphic Design</span> <span>80%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card-box">
+                    <h3>Development Skills</h3>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>HTML / CSS</span> <span>85%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>ASP.NET (C#)</span> <span>75%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 75%;"></div></div>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>Bootstrap</span> <span>80%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <div class="skill-name"><span>SQL Server</span> <span>70%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 70%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- STATS SECTION -->
+<div class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">Projects Done</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-label">Happy Clients</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-number">0+</div>
+                    <div class="stat-label">Fresher</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Certifications</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SERVICES SECTION -->
+<div class="section">
+    <h2>My <span>Services</span></h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card-box">
+                    <h3>Photography</h3>
+                    <p>Professional photography  including   events, and nature shoots with high-quality editing.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-box">
+                    <h3>Graphic Design</h3>
+                    <p>Creative graphic design for logos, banners, social media posts, and marketing materials that stand out.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-box">
+                    <h3>Web Development</h3>
+                    <p>Building responsive and modern websites .</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURED WORK -->
+<div class="section">
+    <h2>Featured <span>Work</span></h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="Images/p11.jpg" class="img-responsive" alt="Work 1" />
+            </div>
+            <div class="col-md-4">
+                <img src="Images/p2.jpg" class="img-responsive" alt="Work 2" />
+            </div>
+            <div class="col-md-4">
+                <img src="Images/poster.png" class="img-responsive" alt="Work 3" />
+            </div>
+            <div class="col-md-4">
+    <img src="Images/p7.png" class="img-responsive" alt="Work 3" />
+</div>
+                        <div class="col-md-4">
+    <img src="Images/Untitled-1.jpg" class="img-responsive" alt="Work 3" />
+</div>
+
+            
+                        <div class="col-md-4">
+    <img src="Images/p1.jpg" class="img-responsive" alt="Work 3" />
+</div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<!-- EDUCATION & EXPERIENCE TIMELINE -->
+<div class="section timeline-section">
+    <h2>Education & <span>Experience</span></h2>
+
+    <div class="container">
+        <div class="timeline">
+            
+            <!-- Education 1 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2021 - 2024</div>
+                    <div class="timeline-title">Bachelor of Computer Application</div>
+                    <div class="timeline-subtitle">Mumbai University</div>
+                    <div class="timeline-text">Completed degree with focus on programming, web development, and software engineering fundamentals.</div>
+                </div>
+            </div>
+            
+            <!-- Experience 1 -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2023 - Present</div>
+                    <div class="timeline-title">Freelance Photographer & Designer</div>
+                    <div class="timeline-subtitle">Self-Employed</div>
+                    <div class="timeline-text">Working on various photography projects including  events Also providing graphic design services to clients.</div>
+                </div>
+            </div>
+            
+            <!-- Certification -->
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2022</div>
+                    <div class="timeline-title">Web Development Certification</div>
+                    <div class="timeline-subtitle">Online Platform</div>
+                    <div class="timeline-text">Completed comprehensive training in  front-end technologies, back-end technologies,Database </div>
+                </div>
+            </div>
+            
+           
+          
+            
+        </div>
+    </div>
+</div>
+
+<!-- CONTACT SECTION -->
+<div class="section contact-section">
+    <h2>Get In <span>Touch</span></h2>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="contact-info-box">
+                    <div class="contact-icon">&#9993;</div>
+                    <h3>Email</h3>
+                    <p><a href="Komalbutere11@gmail.com">yourname@gmail.com</a></p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info-box">
+                    <div class="contact-icon">&#9742;</div>
+                    <h3>Phone</h3>
+                    <p><a href="tel:+919876543210">+8378821578</a></p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info-box">
+                    <div class="contact-icon">&#9906;</div>
+                    <h3>Location</h3>
+                    <p>badlapur 421501 Maharashtra, India</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 40px;">
+            <a href="Contact.aspx" class="btn-custom">Send Message</a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container text-center">
+        <div class="footer-logo">My<span>Portfolio</span></div>
+        <div class="social-links">
+            <a href="#" class="social-link">in</a>
+            <a href="#" class="social-link">Be</a>
+            <a href="#" class="social-link">Dr</a>
+            <a href="#" class="social-link">Ig</a>
+        </div>
+        <p class="copyright">&copy; 2024 MyPortfolio. All Rights Reserved.</p>
+    </div>
+</footer>
+
+</asp:Content>
+
